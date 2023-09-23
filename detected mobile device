@@ -1,0 +1,8 @@
+if isMobile true that men the device is mobile if return false that mean desktop or other device
+
+
+  function isMobile() {
+    const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+    
+    return regex.test(navigator.userAgent);
+  }
