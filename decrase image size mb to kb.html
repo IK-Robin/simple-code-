@@ -10,12 +10,16 @@
         <input type="file" id="fileInput">
         <input type="submit" value="sub">
     </form>
-    <button id="downloadButton">Download Compressed Image</button>
+    <button id="downloadJpeg">Download JPEG</button>
+    <button id="downloadPng">Download PNG</button>
+    <button id="downloadWebp">Download WebP</button>
     <img id="compressedImage" src="" alt="Compressed Image">
 
     <script>
         document.getElementById('fileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
+            // get the file name 
+           let fileName  = file.name;
             const reader = new FileReader();
 
             reader.onload = function(e) {
@@ -31,13 +35,17 @@
 
                     let width = img.width;
                     let height = img.height;
-
+                    console.log(width)
+                    console.log(height)
+// adjuset the image widht 
                     if (width > height) {
                         if (width > maxWidth) {
                             height *= maxWidth / width;
+                            console.log(height)
                             width = maxWidth;
                         }
                     } else {
+                        // adjuset the image height  
                         if (height > maxHeight) {
                             width *= maxHeight / height;
                             height = maxHeight;
@@ -46,8 +54,9 @@
 
                     canvas.width = width;
                     canvas.height = height;
-
+                    // use js drawImage api to drar the image in canvas
                     ctx.drawImage(img, 0, 0, width, height);
+                  
 
                     const compressedDataURL = canvas.toDataURL('image/webp', 1); // Adjust quality as needed
                     // Upload compressedDataURL to your server
@@ -58,11 +67,25 @@
                     // Assuming compressedDataURL contains the compressed image data
                     compressedImageElement.src = compressedDataURL;
 
-                    // Assuming you have a button with the id "downloadButton"
-                    document.getElementById('downloadButton').addEventListener('click', function() {
+                    // Assuming you have buttons with the ids "downloadJpeg", "downloadPng", and "downloadWebp"
+                    document.getElementById('downloadJpeg').addEventListener('click', function() {
                         const a = document.createElement('a');
                         a.href = compressedDataURL;
-                        a.download = 'compressed_image.webp'; // Change the file extension to .webp
+                        a.download = `${fileName}.jpg`;
+                        a.click();
+                    });
+
+                    document.getElementById('downloadPng').addEventListener('click', function() {
+                        const a = document.createElement('a');
+                        a.href = compressedDataURL;
+                        a.download = `${fileName}.png`;;
+                        a.click();
+                    });
+
+                    document.getElementById('downloadWebp').addEventListener('click', function() {
+                        const a = document.createElement('a');
+                        a.href = compressedDataURL;
+                        a.download =`${fileName}.webp`;
                         a.click();
                     });
                 };
