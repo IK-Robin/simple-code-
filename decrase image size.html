@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>image size</title>
+</head>
+<body>
+    <form class="">
+        <input type="file" id="fileInput">
+        <input type="submit" value="sub">
+    </form>
+    <button id="downloadButton">Download Compressed Image</button>
+    <img id="compressedImage" src="" alt="Compressed Image">
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    const maxWidth = 800; // Set your desired maximum width
+                    const maxHeight = 600; // Set your desired maximum height
+
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataURL = canvas.toDataURL('image/webp', 1); // Adjust quality as needed
+                    // Upload compressedDataURL to your server
+                    console.log(compressedDataURL);
+                    // Assuming you have an <img> element with the id "compressedImage"
+                    const compressedImageElement = document.getElementById('compressedImage');
+
+                    // Assuming compressedDataURL contains the compressed image data
+                    compressedImageElement.src = compressedDataURL;
+
+                    // Assuming you have a button with the id "downloadButton"
+                    document.getElementById('downloadButton').addEventListener('click', function() {
+                        const a = document.createElement('a');
+                        a.href = compressedDataURL;
+                        a.download = 'compressed_image.webp'; // Change the file extension to .webp
+                        a.click();
+                    });
+                };
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+</body>
+</html>
